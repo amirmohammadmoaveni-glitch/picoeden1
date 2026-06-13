@@ -6,14 +6,17 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
+
 set(sdkVersion 2.1.1)
 set(toolchainVersion 14_2_Rel1)
 set(picotoolVersion 2.1.1)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
+
 if (EXISTS ${picoVscode})
     include(${picoVscode})
 endif()
 # ====================================================================================
+
 set(PICO_BOARD pico2 CACHE STRING "Board type")
 
 # Example override variant
@@ -42,6 +45,8 @@ project(${PROJECT_NAME})
 pico_sdk_init()
 
 set(CMAKE_BUILD_TYPE Release)
+
+option(PICOSTATION_PU7 "Enable PU-7 experimental timing profile" OFF)
 
 function(addBinaryFileWithSize target name sizeName path)
     set(asmFile "${PROJECT_BINARY_DIR}/includes/${target}_${name}.s")
@@ -92,6 +97,10 @@ target_compile_definitions(
     PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64
     MAXINDEX=2
 )
+
+if(PICOSTATION_PU7)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC PICOSTATION_PU7=1)
+endif()
 
 addBinaryFileWithSize(${PROJECT_NAME} loaderImage loaderImageSize binary/picostation-menu.bin)
 
