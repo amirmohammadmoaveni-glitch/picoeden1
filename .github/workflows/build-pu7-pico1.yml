@@ -1,0 +1,40 @@
+name: Build PicoStation PU-7 Pico1 UF2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build tools
+        run: |
+          sudo apt update
+          sudo apt install -y cmake build-essential gcc-arm-none-eabi libnewlib-arm-none-eabi python3
+
+      - name: Configure CMake for Pi Pico RP2040
+        run: |
+          cmake -B build-pu7-pico1 \
+            -DPICOSTATION_PU7=ON \
+            -DPICOSTATION_VARIANT=picostation_pico1 \
+            -DPICO_BOARD=pico
+
+      - name: Build UF2
+        run: |
+          cmake --build build-pu7-pico1
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: picostation-pu7-pico1-uf2
+          path: build-pu7-pico1/*.uf2
