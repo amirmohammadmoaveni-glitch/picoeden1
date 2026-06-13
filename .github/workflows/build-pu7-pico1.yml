@@ -31,6 +31,13 @@ jobs:
           cd third_party/pico-sdk
           git submodule update --init --recursive
 
+      - name: Download RP2040 Pseudo Atomic
+        run: |
+          mkdir -p third_party
+          if [ ! -d "third_party/RP2040_Pseudo_Atomic" ]; then
+            git clone --depth 1 https://github.com/TSprech/RP2040_Pseudo_Atomic.git third_party/RP2040_Pseudo_Atomic
+          fi
+
       - name: Check required folders
         run: |
           ls -la third_party
