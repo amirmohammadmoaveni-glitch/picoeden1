@@ -20,7 +20,23 @@ jobs:
       - name: Install build tools
         run: |
           sudo apt update
-          sudo apt install -y cmake build-essential gcc-arm-none-eabi libnewlib-arm-none-eabi python3
+          sudo apt install -y cmake build-essential gcc-arm-none-eabi libnewlib-arm-none-eabi python3 git
+
+      - name: Download Pico SDK
+        run: |
+          mkdir -p third_party
+          if [ ! -d "third_party/pico-sdk" ]; then
+            git clone --depth 1 --branch 2.1.1 https://github.com/raspberrypi/pico-sdk.git third_party/pico-sdk
+          fi
+          cd third_party/pico-sdk
+          git submodule update --init --recursive
+
+      - name: Check required folders
+        run: |
+          ls -la third_party
+          test -d third_party/pico-sdk
+          test -d third_party/SD-fatfs
+          test -d third_party/RP2040_Pseudo_Atomic
 
       - name: Configure CMake for Pi Pico RP2040
         run: |
