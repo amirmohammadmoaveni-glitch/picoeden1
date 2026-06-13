@@ -17,19 +17,8 @@ if (EXISTS ${picoVscode})
 endif()
 # ====================================================================================
 
-set(PICO_BOARD pico2 CACHE STRING "Board type")
-
-# Example override variant
-# set(PICOSTATION_VARIANT "picostation_plus_pico2")
-
-if(NOT DEFINED PICOSTATION_VARIANT)
-    if(PICO_BOARD EQUAL pico2)
-        set(PICOSTATION_VARIANT "picostation_pico2")
-    else()
-        set(PICOSTATION_VARIANT "picostation_pico1")
-    endif()
-    message(STATUS "NOTE: PicoStation variant not defined. Using ${PICOSTATION_VARIANT}")
-endif()
+set(PICO_BOARD pico CACHE STRING "Board type" FORCE)
+set(PICOSTATION_VARIANT "picostation_pico1" CACHE STRING "PicoStation variant" FORCE)
 
 include(boards/picostation_variant.cmake)
 
@@ -46,7 +35,7 @@ pico_sdk_init()
 
 set(CMAKE_BUILD_TYPE Release)
 
-option(PICOSTATION_PU7 "Enable PU-7 experimental timing profile" OFF)
+option(PICOSTATION_PU7 "Enable PU-7 experimental timing profile" ON)
 
 function(addBinaryFileWithSize target name sizeName path)
     set(asmFile "${PROJECT_BINARY_DIR}/includes/${target}_${name}.s")
